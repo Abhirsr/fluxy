@@ -40,7 +40,26 @@ $(document).ready(function () {
             eel.playassisstantsound();
             $("#Oval").attr("hidden", true);
             $("#SiriWave").attr("hidden", false);
-            eel.takecommand()();
+            eel.allCommands()();
         
         });
-});
+
+        function doc_keyUp(e) {
+            console.log("Key released:", e.key);
+            console.log("Meta key status:", e.metaKey);
+            console.log("Ctrl key status:", e.ctrlKey);
+            
+            // Check if the 'j' key is released while Meta or Ctrl is still pressed
+            if (e.key === 'j' && (e.metaKey || e.ctrlKey)) {
+                // Trigger actions via Eel
+                eel.playassisstantsound();
+                $("#Oval").attr("hidden", true);
+                $("#SiriWave").attr("hidden", false);
+                eel.allCommands();
+            }
+        }
+        
+        document.addEventListener('keyup', doc_keyUp, false);
+        
+    
+});    

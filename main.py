@@ -3,11 +3,12 @@ import eel
 from engine.features import *
 from engine.command import *
 
-eel.init("www")
+def start():
+    eel.init("www")
 
-playassisstantsound()
+    playassisstantsound()
 
-#making fluxy a window 
-os.system('start msedge.exe --app="http://localhost:8000/index.html"')
+        #making Abhi a window 
+    os.system('start msedge.exe --app="http://localhost:8000/index.html"')
 
-eel.start('index.html',mode=None,host='localhost',block=True)
+    eel.start('index.html',mode=None,host='localhost',block=True)
