@@ -2,6 +2,7 @@ import os
 import re
 import struct
 import webbrowser
+import hugchat
 from playsound import playsound
 import eel
 from engine.config import ASSISSTANT_NAME
@@ -9,7 +10,7 @@ from engine.command import *
 import pywhatkit as kit
 from engine.db import *
 from engine.helper import extract_yt_term
-import pvporcupine
+import speech_recognition as sr
 import pyaudio
 import pyautogui as autogui
 
@@ -25,91 +26,87 @@ def opencommand(query):
     query = query.replace("open","")
     query.lower()
  
- #strip is used to remove spaces between the words
+    #strip is used to remove spaces between the words
     app_name = query.strip()
 
     if app_name != "":
         try:
-                cursor.execute('SELECT path FROM sys_command WHERE name IN (?)', (app_name,))
-                results = cursor.fetchall()
+            cursor.execute('SELECT path FROM sys_command WHERE name IN (?)', (app_name,))
+            results = cursor.fetchall()
 
+            if len(results) != 0:
+                speak("Opening "+query)
+                os.startfile(results[0][0])
+
+            elif len(results) == 0: 
+                cursor.execute('SELECT url FROM web_command WHERE name IN (?)', (app_name,))
+                results = cursor.fetchall()
+                        
                 if len(results) != 0:
                     speak("Opening "+query)
-                    os.startfile(results[0][0])
-
-                elif len(results) == 0: 
-                    cursor.execute('SELECT url FROM web_command WHERE name IN (?)', (app_name,))
-                    results = cursor.fetchall()
-                        
-                    if len(results) != 0:
-                        speak("Opening "+query)
-                        webbrowser.open(results[0][0])
-                    else:
-                        speak("Opening "+query)
-                        try:
-                            os.system('start '+query)
-                        except:
-                            speak("not found")
+                    webbrowser.open(results[0][0])
+                else:
+                    speak("Opening "+query)
+                    try:
+                        os.system('start '+query)
+                    except:
+                        speak("not found")
         except:
-                speak("some thing went wrong")
+            speak("some thing went wrong")
     
     
 def PlayYoutube(query):
-        search_term = extract_yt_term(query)
-        speak("Playing "+search_term+" on YouTube")
-        kit.playonyt(search_term)
+    search_term = extract_yt_term(query)
+    speak("Playing "+search_term+" on YouTube")
+    kit.playonyt(search_term)
 
 import eel
 import pyaudio
 import struct
-import pvporcupine
+import speech_recognition as sr
 
 def hotword():
-    porcupine = None
-    paud = None
-    audio_stream = None
+    recognizer = sr.Recognizer()
+    mic = sr.Microphone()
+    keywords = ["hey ram"]
+
     try:
-        # Access key and path for hotword detection
-        access_key = 't9Bz4EBgHsDzjwNgNGweTMYKjz1Q3vB4I7luNMIscTgrESR7y3hKEg=='  # Replace with your valid access key
-        porcupine = pvporcupine.create(access_key,keyword_paths=["www\\assets\\audio\\hey-ram_en_windows_v3_0_0.ppn"])
+        with mic as source:
+            recognizer.adjust_for_ambient_noise(source)
+            print("Listening for hotword...")
 
-        # Initialize PyAudio for audio input stream
-        paud = pyaudio.PyAudio()
-        audio_stream = paud.open(rate=porcupine.sample_rate, channels=1, format=pyaudio.paInt16, input=True, frames_per_buffer=porcupine.frame_length)
+            while True:
+                audio = recognizer.listen(source)
+                try:
+                    detected_text = recognizer.recognize_google(audio)
+                    if any(keyword in detected_text.lower() for keyword in keywords):
+                        print(f"Hotword detected: {detected_text}")
 
-        keywords = ["hey ram"]  # Keywords list (you can extend this if needed)
-
-        # Listen for hotword in the audio stream
-        while True:
-            keyword = audio_stream.read(porcupine.frame_length)
-            keyword = struct.unpack_from("h" * porcupine.frame_length, keyword)
-
-            keyword_index = porcupine.process(keyword)
-
-            if keyword_index >= 0:
-                detected_keyword = keywords[keyword_index]
-                print(f"Hotword detected: {detected_keyword}")
-
-                # When the hotword is detected, call JavaScript to update the UI
-                if detected_keyword == "hey ram":
-                    print("hey ram hotword detected")
-                    import pyautogui as autogui
-                    autogui.keyDown("win") 
-                    autogui.press("j")
-                    time.sleep(2)
-                    autogui.keyUp("win")
-                 # Call JavaScript function to update the UI
-                    print("Proceeding to microphone operation...")
+                        if "hey ram" in detected_text.lower():
+                            print("hey ram hotword detected")
+                            autogui.keyDown("win") 
+                            autogui.press("j")
+                            time.sleep(2)
+                            autogui.keyUp("win")
+                            print("Proceeding to microphone operation...")
+                except sr.UnknownValueError:
+                    pass
+                except sr.RequestError as e:
+                   pass
 
     except Exception as e:
         print(f"Error: {e}")
-    finally:
-        if porcupine is not None:
-            porcupine.delete()
-        if audio_stream is not None:
-            audio_stream.close()
-        if paud is not None:
-            paud.terminate()
 
+if __name__ == "__main__":
+    hotword()
 
-
+#chatbot for my assisstant
+def chatBot(query):
+    user_input = query.lower()
+    chatbot = hugchat.ChatBot(cookie_path="engine\cookies.json")
+    id = chatbot.new_conversation()
+    chatbot.change_conversation(id)
+    response =  chatbot.chat(user_input)
+    print(response)
+    speak(response)
+    return response

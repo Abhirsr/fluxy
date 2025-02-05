@@ -1,14 +1,13 @@
-import os
-import eel
-from engine.features import *
+import multiprocessing
+import subprocess
 from engine.command import *
 
-def start():
-    eel.init("www")
+# To run Jarvis
+def startjarvis():
+        # Code for process 1
+        print("Process 1 is running.")
+        from main import start
+        start()
 
-    playassisstantsound()
-
-    #making Abhi a window 
-    os.system('start msedge.exe --app="http://localhost:8000/index.html"')
-
-    eel.start('index.html',mode=None,host='localhost',block=True)
+# To run hotword
+def listenHotword():

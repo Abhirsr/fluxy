@@ -23,18 +23,22 @@ $(document).ready(function () {
     });
     //siri meaasage animation
     $('.siri-message').textillate({
-        loop:true,
-        sync:true,
-        in:{
-            effect:"fadeInUp",
-            sync:true,
+        loop: false,
+        sync: true,
+        in: {
+            effect: "fadeInUp",
+            sync: true,
         },
-        out:{
-            effect:"fadeOutUp",
-            sync:true,
-        },
-
+        out: {
+            effect: "fadeOutUp",
+            sync: true,
+            delay: 5000,  // Optional: Delay before hiding
+            callback: function() {
+                $('.siri-message').show(); // Keep text visible
+            }
+        }
     });
+    
 
     //mic button click eventlistener
         $("#MicBtn").click(function () { 
