@@ -3,7 +3,7 @@ import subprocess
 from engine.command import *
 
 # To run Jarvis
-def startjarvis():
+def startram():
         # Code for process 1
         print("Process 1 is running.")
         from main import start
@@ -19,7 +19,7 @@ def listenHotword():
 
     # Start both processes
 if __name__ == '__main__':
-        p1 = multiprocessing.Process(target=startjarvis)
+        p1 = multiprocessing.Process(target=startram)
         p2 = multiprocessing.Process(target=listenHotword)
         p1.start()
         p2.start()

@@ -18,6 +18,7 @@ from sklearn.naive_bayes import MultinomialNB
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 def speak(text):
+    text = str(text)
     engine = pyttsx3.init('sapi5')
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[0].id)
@@ -66,7 +67,8 @@ def allCommands(message=1):
         elif "spam" in query:  
             spam_detector()  # Call Spam Detector
         else:
-            print("not run")
+            from engine.features import chatBot
+            chatBot(query)
     except:
         print("error")
     eel.showhood()

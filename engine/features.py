@@ -2,7 +2,7 @@ import os
 import re
 import struct
 import webbrowser
-import hugchat
+from hugchat import hugchat
 from playsound import playsound
 import eel
 from engine.config import ASSISSTANT_NAME
@@ -17,7 +17,7 @@ import pyautogui as autogui
 #playing assistant sound
 @eel.expose
 def playassisstantsound():
-    music_dir = "www\\assets\\audio\\start_sound.mp3"
+    music_dir = "C:\\Users\\abhin\\OneDrive\\Desktop\\fluxy\\www\\assets\\audio\\game-start-6104.mp3"
     playsound(music_dir)
 
 
@@ -97,10 +97,8 @@ def hotword():
     except Exception as e:
         print(f"Error: {e}")
 
-if __name__ == "__main__":
-    hotword()
-
 #chatbot for my assisstant
+
 def chatBot(query):
     user_input = query.lower()
     chatbot = hugchat.ChatBot(cookie_path="engine\cookies.json")
@@ -110,3 +108,4 @@ def chatBot(query):
     print(response)
     speak(response)
     return response
+

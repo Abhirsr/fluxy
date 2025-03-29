@@ -23,7 +23,7 @@ $(document).ready(function () {
     });
     //siri meaasage animation
     $('.siri-message').textillate({
-        loop: false,
+        loop: true,
         sync: true,
         in: {
             effect: "fadeInUp",
@@ -32,11 +32,8 @@ $(document).ready(function () {
         out: {
             effect: "fadeOutUp",
             sync: true,
-            delay: 5000,  // Optional: Delay before hiding
-            callback: function() {
-                $('.siri-message').show(); // Keep text visible
-            }
-        }
+        },
+
     });
     
 
